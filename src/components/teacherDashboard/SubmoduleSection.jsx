@@ -2,6 +2,7 @@ import React from 'react'
 
 const SubmoduleSection = ({ modules, subForm, subPreview, onChange, onSubmit, onEdit, onDelete }) => {
     const selectedModule = modules.find(m => m.$id === subForm.moduleId)
+    console.log(subForm)
     return (
         <div className="bg-white rounded-2xl shadow p-6">
             <h3 className="font-semibold text-gray-800 mb-1">Add Submodule</h3>

@@ -10,8 +10,18 @@ import TeacherAuthPage from './pages/TeacherAuth.jsx';
 import ExamPage from './pages/ExamPage.jsx';
 import SubmodulePage from './pages/SubmodulePage.jsx';
 import ModuleExamPage from './pages/ModuleExamPage.jsx';
+import { Provider } from 'react-redux';
+import { store } from './store/index.js';
 import TeacherDashboard from './pages/TeacherDashboard.jsx';
 import RequireAuth from './routes/RequireAuth.jsx';
+import StudentLayout from './components/layout/StudentLayout.jsx';
+import TeacherLayout from './components/layout/TeacherLayout.jsx';
+import YourCourses from './pages/teacher/YourCourses.jsx';
+import CreateCourse from './pages/teacher/CreateCourse.jsx';
+import Analytics from './pages/teacher/Analytics.jsx';
+import Doubts from './pages/teacher/Doubts.jsx';
+import CourseDetail from './pages/teacher/CourseDetail.jsx';
+import EditCourse from './pages/teacher/EditCourse.jsx';
 import { registerSW } from 'virtual:pwa-register'
 registerSW({ immediate: true })
 
@@ -22,15 +32,15 @@ let router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Home />,
+        element: <StudentLayout><Home /></StudentLayout>,
       },
       {
         path: "/lesson/:moduleId",
-        element: <LessonPage />,
+        element: <StudentLayout><LessonPage /></StudentLayout>,
       },
       {
         path: "/modules",
-        element: <ModulePage />,
+        element: <StudentLayout><ModulePage /></StudentLayout>,
       },
       {
         path: "/teacher-auth",
@@ -38,21 +48,69 @@ let router = createBrowserRouter([
       },
       {
         path: "/lesson/:moduleId/exam/:subId",
-        element: <ExamPage />,
+        element: <StudentLayout><ExamPage /></StudentLayout>,
       },
       {
         path: "/lesson/:moduleId/sub/:subId",
-        element: <SubmodulePage />,
+        element: <StudentLayout><SubmodulePage /></StudentLayout>,
       },
       {
         path: "/lesson/:moduleId/test",
-        element: <ModuleExamPage />,
+        element: <StudentLayout><ModuleExamPage /></StudentLayout>,
       },
       {
         path: "/teacher-dashboard",
         element: (
           <RequireAuth>
-            <TeacherDashboard />
+            <TeacherLayout><YourCourses /></TeacherLayout>
+          </RequireAuth>
+        ),
+      },
+      {
+        path: "/teacher-dashboard/courses",
+        element: (
+          <RequireAuth>
+            <TeacherLayout><YourCourses /></TeacherLayout>
+          </RequireAuth>
+        ),
+      },
+      {
+        path: "/teacher-dashboard/create",
+        element: (
+          <RequireAuth>
+            <TeacherLayout><CreateCourse /></TeacherLayout>
+          </RequireAuth>
+        ),
+      },
+      {
+        path: "/teacher-dashboard/analytics",
+        element: (
+          <RequireAuth>
+            <TeacherLayout><Analytics /></TeacherLayout>
+          </RequireAuth>
+        ),
+      },
+      {
+        path: "/teacher-dashboard/doubts",
+        element: (
+          <RequireAuth>
+            <TeacherLayout><Doubts /></TeacherLayout>
+          </RequireAuth>
+        ),
+      },
+      {
+        path: "/teacher-dashboard/courses/:moduleId",
+        element: (
+          <RequireAuth>
+            <TeacherLayout><CourseDetail /></TeacherLayout>
+          </RequireAuth>
+        ),
+      },
+      {
+        path: "/teacher-dashboard/courses/:moduleId/edit",
+        element: (
+          <RequireAuth>
+            <TeacherLayout><EditCourse /></TeacherLayout>
           </RequireAuth>
         ),
       },
@@ -67,6 +125,8 @@ if ('serviceWorker' in navigator) {
 }
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>
   </StrictMode>,
 )

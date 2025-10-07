@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const IntroSection = () => {
   return (
@@ -14,12 +15,10 @@ const IntroSection = () => {
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-          <button className="bg-indigo-600 text-white px-6 py-3 rounded-full hover:bg-indigo-700 transition duration-300">
-            Proceed
-          </button>
-          <button className="border-2 border-indigo-600 text-indigo-600 px-6 py-3 rounded-full hover:bg-indigo-600 hover:text-white transition duration-300">
-            Learn More
-          </button>
+          <Link to="/modules" className="bg-indigo-600 text-white px-6 py-3 rounded-full hover:bg-indigo-700 transition duration-300">
+          Explore Modules
+          </Link>
+        
         </div>
       </div>
 

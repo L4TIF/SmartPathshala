@@ -27,8 +27,10 @@ const TeacherNavbar = () => {
                 <div className="flex justify-between items-center h-16">
                     <Link to="/teacher-dashboard" className="text-2xl font-bold">SmartPathshala • Teacher</Link>
                     <div className="hidden md:flex items-center space-x-6">
-                        <Link to="/teacher-dashboard" className="hover:underline">Dashboard</Link>
-                        {/* <Link to="/modules" className="hover:underline">Modules</Link> */}
+                        <Link to="/teacher-dashboard/courses" className="hover:underline">Your Courses</Link>
+                        <Link to="/teacher-dashboard/create" className="hover:underline">Create Course</Link>
+                        <Link to="/teacher-dashboard/analytics" className="hover:underline">Analytics</Link>
+                        <Link to="/teacher-dashboard/doubts" className="hover:underline">Doubts</Link>
                         {!checking && (
                             isAuthed ? (
                                 <button onClick={handleLogout} className="px-4 py-1.5 bg-white text-indigo-700 rounded-lg hover:bg-indigo-50 transition">Logout</button>
@@ -42,8 +44,10 @@ const TeacherNavbar = () => {
             </div>
             {isOpen && (
                 <div className="md:hidden bg-indigo-700">
-                    <Link to="/teacher-dashboard" className="block px-4 py-2 hover:bg-indigo-800">Dashboard</Link>
-                    <Link to="/modules" className="block px-4 py-2 hover:bg-indigo-800">Modules</Link>
+                    <Link to="/teacher-dashboard/courses" className="block px-4 py-2 hover:bg-indigo-800">Your Courses</Link>
+                    <Link to="/teacher-dashboard/create" className="block px-4 py-2 hover:bg-indigo-800">Create Course</Link>
+                    <Link to="/teacher-dashboard/analytics" className="block px-4 py-2 hover:bg-indigo-800">Analytics</Link>
+                    <Link to="/teacher-dashboard/doubts" className="block px-4 py-2 hover:bg-indigo-800">Doubts</Link>
                     {!checking && (
                         isAuthed ? (
                             <button onClick={handleLogout} className="block w-full text-left px-4 py-2 hover:bg-indigo-800">Logout</button>

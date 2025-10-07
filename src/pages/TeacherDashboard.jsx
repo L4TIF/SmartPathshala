@@ -67,7 +67,7 @@ const TeacherDashboard = () => {
                 title: subForm.title,
                 content: subForm.content,
                 image: subForm.imageUrl || '',
-                codeSnippets: subForm.codeSnippet,
+                codeSnippets: subForm.codeSnippet.trim(),
                 resourceName: resourceName,
                 moduleId: subForm.moduleId,
             })
@@ -105,7 +105,7 @@ const TeacherDashboard = () => {
         const imageUrl = prompt('Edit image URL', s.imageUrl || '')
         const codeSnippet = prompt('Edit code snippet', s.codeSnippet || '')
         try {
-            await updateSubModule(s.$id, { title, content, imageUrl, codeSnippet })
+            await updateSubModule(s.$id, { title, content, image: imageUrl, codeSnippets: codeSnippet })
             if (subForm.moduleId) setSubPreview(await getSubModules(subForm.moduleId))
         } catch (e) { setError(e?.message || 'Failed to update submodule') }
     }

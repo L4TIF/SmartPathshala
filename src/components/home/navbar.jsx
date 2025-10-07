@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { account } from "../../lib/appwrite";
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { account } from '../../lib/appwrite';
+import { useSelector, useDispatch } from 'react-redux';
+import { setAuthenticated, setLoggedOut } from '../../store/slices/authSlice';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isAuthed, setIsAuthed] = useState(false);
+  const dispatch = useDispatch();
+  const isAuthed = useSelector((s) => s.auth.isAuthenticated);
   const [checking, setChecking] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
-  const isHome = location.pathname === "/";
+  const isHome = location.pathname !== '/teacher-dashboard';
+  const [query, setQuery] = useState('');
 
   // ✅ Google Translate setup (works for both desktop & mobile)
   useEffect(() => {
@@ -45,40 +49,20 @@ const Navbar = () => {
 
   // ✅ Authentication check
   useEffect(() => {
+    console.log(location.pathname)
     let mounted = true;
-    const localRole = (() => {
-      try {
-        return localStorage.getItem("role");
-      } catch {
-        return null;
-      }
-    })();
-    account
-      .get()
-      .then(() => {
-        if (mounted) {
-          setIsAuthed(true);
-          setChecking(false);
-        }
-      })
-      .catch(() => {
-        if (mounted) {
-          setIsAuthed(!!localRole);
-          setChecking(false);
-        }
-      });
-    return () => {
-      mounted = false;
-    };
+    account.get()
+      .then(async () => { if (mounted) { try { const me = await account.get(); dispatch(setAuthenticated(me)); } catch { } setChecking(false); } })
+      .catch(() => { if (mounted) { dispatch(setLoggedOut()); setChecking(false); } });
+    return () => { mounted = false };
   }, []);
 
   const handleLogout = async () => {
     try {
-      await account.deleteSession("current");
-      setIsAuthed(false);
-      localStorage.removeItem("role");
-      navigate("/");
-    } catch (_) {}
+      await account.deleteSession('current');
+      dispatch(setLoggedOut());
+      navigate('/');
+    } catch (_) { }
   };
 
   return (
@@ -136,10 +120,15 @@ const Navbar = () => {
           <div className="hidden md:flex items-center space-x-3">
             <input
               type="text"
-              placeholder="Search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search modules"
               className="border rounded-lg px-3 py-1 focus:outline-none focus:ring-2 focus:ring-indigo-400"
             />
-            <button className="px-4 py-1 border border-indigo-600 text-indigo-600 rounded-lg hover:bg-indigo-600 hover:text-white transition">
+            <button
+              onClick={() => navigate(`/modules?search=${encodeURIComponent(query.trim())}`)}
+              className="px-4 py-1 border border-indigo-600 text-indigo-600 rounded-lg hover:bg-indigo-600 hover:text-white transition"
+            >
               Search
             </button>
 
@@ -190,10 +179,15 @@ const Navbar = () => {
           <div className="px-4 py-2 flex items-center space-x-2">
             <input
               type="text"
-              placeholder="Search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search modules"
               className="border rounded-lg px-3 py-1 w-full focus:outline-none focus:ring-2 focus:ring-indigo-400"
             />
-            <button className="px-4 py-1 border border-indigo-600 text-indigo-600 rounded-lg hover:bg-indigo-600 hover:text-white transition">
+            <button
+              onClick={() => { setIsOpen(false); navigate(`/modules?search=${encodeURIComponent(query.trim())}`) }}
+              className="px-4 py-1 border border-indigo-600 text-indigo-600 rounded-lg hover:bg-indigo-600 hover:text-white transition"
+            >
               Go
             </button>
           </div>

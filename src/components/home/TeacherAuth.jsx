@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { ID } from 'appwrite'
 import { account } from '../../lib/appwrite'
 import { useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { setAuthenticated } from '../../store/slices/authSlice'
 
 const TeacherAuth = () => {
     const navigate = useNavigate()
@@ -10,6 +12,7 @@ const TeacherAuth = () => {
     const [message, setMessage] = useState('')
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
+    const dispatch = useDispatch()
 
     const handleChange = (e) => {
         const { name, value } = e.target
@@ -30,7 +33,10 @@ const TeacherAuth = () => {
                 await account.createEmailPasswordSession(form.email, form.password)
                 setMessage('Login successful.')
             }
-            try { localStorage.setItem('role', 'teacher'); } catch (_) { }
+            try {
+                const me = await account.get()
+                dispatch(setAuthenticated(me))
+            } catch (_) { }
             // Optional: redirect to modules after a short delay
             setTimeout(() => navigate('/teacher-dashboard'), 500)
         } catch (err) {
