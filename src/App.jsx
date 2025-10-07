@@ -6,6 +6,7 @@ const App = () => {
     <>
       <div className="text-4xl">Parent Component</div>
       <Outlet />
+      <Footer />
     </>
   );
 };
