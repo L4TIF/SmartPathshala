@@ -37,7 +37,6 @@ const StudentDoubtModal = ({setIsOpen}) => {
       {(
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white rounded-xl shadow-lg w-full max-w-md p-6 relative">
-
             {/* Modal Header */}
             <h2 className="text-2xl font-semibold text-center text-indigo-600 mb-2">
               Ask Your Doubt
