@@ -8,7 +8,7 @@ const Card = ({ title, description, image }) => {
       <img
         src={image}
         alt={title}
-        className="w-full h-32 object-cover rounded-lg mb-3"
+        className="w-20 h-20 mx-auto object-contain mb-3"
       />
       <h3 className="text-lg font-semibold text-center mb-1">{title}</h3>
       <p className="text-gray-600 text-sm text-center">{description}</p>
@@ -18,16 +18,16 @@ const Card = ({ title, description, image }) => {
 
 const Home = () => {
   const imageByModuleId = {
-    'mod-python': 'https://images.unsplash.com/photo-1518779578993-ec3579fee39f?q=80&w=1200&auto=format&fit=crop',
-    'mod-computer-basics': 'https://images.unsplash.com/photo-1517433456452-f9633a875f6f?q=80&w=1200&auto=format&fit=crop',
-    'mod-digital-literacy': 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=1200&auto=format&fit=crop',
+    'mod-python': 'https://upload.wikimedia.org/wikipedia/commons/c/c3/Python-logo-notext.svg',
+    'mod-computer-basics': 'https://cdn-icons-png.flaticon.com/512/2702/2702602.png',
+    'mod-digital-literacy': 'https://cdn-icons-png.flaticon.com/512/3176/3176362.png',
   }
 
   const modules = mockModules.map((m) => ({
     id: m.id,
     title: m.moduleName,
     description: m.description,
-    image: imageByModuleId[m.id] || 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=1200&auto=format&fit=crop',
+    image: imageByModuleId[m.id] || 'https://cdn-icons-png.flaticon.com/512/4359/4359963.png',
   }))
 
   return (

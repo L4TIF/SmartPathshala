@@ -68,7 +68,7 @@ ${imageUrl ? `<img src="${imageUrl}" alt="${title}" />` : ''}
 
     return (
         <>
-            <div><Navbar /></div>
+            
             <section className="h-auto bg-gray-100 py-10 px-6">
                 <div className="max-w-4xl mx-auto">
                     <button onClick={() => navigate(-1)} className="text-indigo-600 mb-4">← Back</button>
@@ -99,7 +99,7 @@ ${imageUrl ? `<img src="${imageUrl}" alt="${title}" />` : ''}
                     </div>
                 </div>
             </section>
-            <div><Footer /></div>
+            
         </>
     )
 }

@@ -224,7 +224,7 @@ const TeacherDashboard = () => {
                 onClose={() => setShowCreateModal(false)}
                 onSubmit={handleCreateModule}
             />
-            <div><Footer /></div>
+            {/* <div><Footer /></div> */}
         </>
     )
 }

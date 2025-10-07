@@ -33,9 +33,9 @@ const ModulePage = () => {
                 <div className="bg-white rounded-2xl shadow-md p-5 hover:shadow-lg transition duration-300 ease-in-out h-full">
                   <div className="flex items-start gap-4">
                     <img
-                      src={'https://cdn-icons-png.flaticon.com/512/4359/4359963.png'}
+                      src={`https://api.dicebear.com/8.x/shapes/svg?seed=${encodeURIComponent(module.moduleName)}`}
                       alt={module.moduleName}
-                      className="w-16 h-16 object-contain"
+                      className="w-16 h-16 object-contain rounded"
                     />
                     <div>
                       <h3 className="text-lg font-semibold mb-1 text-gray-800">{module.moduleName}</h3>
