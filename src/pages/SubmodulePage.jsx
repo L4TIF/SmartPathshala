@@ -24,7 +24,7 @@ const SubmodulePage = () => {
 
             try {
                 const subs = await getSubModules(moduleId)
-                const mappedSubs = subs.map(s => ({ id: s.$id, title: s.title, content: s.content, resourceName: s.resourceName, imageUrl: s.imageUrl, codeSnippet: s.codeSnippet }))
+                const mappedSubs = subs.map(s => ({ id: s.$id, title: s.title, content: s.content, resourceName: s.resourceName, imageUrl: s.image, codeSnippet: s.codeSnippets }))
                 const list = [
                     ...((mockSubmodulesByModuleId[moduleId]) || []),
                     ...mappedSubs,

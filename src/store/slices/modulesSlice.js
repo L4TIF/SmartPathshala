@@ -15,7 +15,7 @@ export const fetchModules = createAsyncThunk('modules/fetchModules', async () =>
 export const fetchSubmodules = createAsyncThunk('modules/fetchSubmodules', async (moduleId) => {
     try {
         const docs = await getSubModules(moduleId)
-        const mapped = docs.map(s => ({ id: s.$id, title: s.title, content: s.content, resourceName: s.resourceName, imageUrl: s.imageUrl, codeSnippet: s.codeSnippet }))
+        const mapped = docs.map(s => ({ id: s.$id, title: s.title, content: s.content, resourceName: s.resourceName, imageUrl: s.image, codeSnippet: s.codeSnippets }))
         return { moduleId, submodules: [...(mockSubmodulesByModuleId[moduleId] || []), ...mapped] }
     } catch {
         return { moduleId, submodules: (mockSubmodulesByModuleId[moduleId] || []) }

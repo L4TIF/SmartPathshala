@@ -51,12 +51,12 @@ export const getSubModules = async (moduleId) => {
   return response.documents;
 };
 
-export const createSubModule = async ({ moduleId, title, content, imageUrl, codeSnippet, resourceName }) => {
+export const createSubModule = async ({ moduleId, title, content, image, codeSnippets, resourceName }) => {
   const response = await databases.createDocument(
     config.databaseId,
     config.submodulesCollectionId,
     ID.unique(),
-    { title, content, imageUrl, codeSnippet, resourceName, moduleId }
+    { title, content, image, codeSnippets, resourceName, moduleId }
   );
 
   console.log("response", response)
