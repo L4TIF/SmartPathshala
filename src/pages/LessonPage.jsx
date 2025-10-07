@@ -3,8 +3,10 @@ import { useNavigate, useParams } from 'react-router-dom'
 import Navbar from '../components/home/navbar'
 import Footer from '../components/home/Footer'
 import { mockSubmodulesByModuleId, mockModules } from '../data/mockData'
+import StudentDoubtModal from './StudentDoubtModal'
 
 const LessonPage = () => {
+  const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate()
   const { moduleId } = useParams()
   const [subModules, setSubModules] = useState([])
@@ -44,7 +46,17 @@ const LessonPage = () => {
               >
                 Attempt Module Test
               </button>
+
+              <button
+                onClick={() => setIsOpen(true)}
+                className="px-3 py-1.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm"
+              >
+                Ask a Doubt
+              </button>
             </div>
+            {
+              isOpen && <StudentDoubtModal setIsOpen={setIsOpen}/>
+            }
           </div>
           {moduleInfo && (
             <p className="text-gray-600 -mt-4 mb-6">{moduleInfo.description}</p>
