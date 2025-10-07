@@ -12,9 +12,10 @@ const Navbar = () => {
 
   useEffect(() => {
     let mounted = true;
+    const localRole = (() => { try { return localStorage.getItem('role') } catch { return null } })()
     account.get()
       .then(() => { if (mounted) { setIsAuthed(true); setChecking(false); } })
-      .catch(() => { if (mounted) { setIsAuthed(false); setChecking(false); } });
+      .catch(() => { if (mounted) { setIsAuthed(!!localRole); setChecking(false); } });
     return () => { mounted = false };
   }, []);
 
@@ -22,6 +23,7 @@ const Navbar = () => {
     try {
       await account.deleteSession('current');
       setIsAuthed(false);
+      try { localStorage.removeItem('role') } catch (_) { }
       navigate('/');
     } catch (_) { }
   };

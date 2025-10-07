@@ -30,6 +30,7 @@ const TeacherAuth = () => {
                 await account.createEmailPasswordSession(form.email, form.password)
                 setMessage('Login successful.')
             }
+            try { localStorage.setItem('role', 'teacher'); } catch (_) { }
             // Optional: redirect to modules after a short delay
             setTimeout(() => navigate('/teacher-dashboard'), 500)
         } catch (err) {
