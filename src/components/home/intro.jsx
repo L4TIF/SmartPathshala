@@ -16,7 +16,7 @@ const IntroSection = () => {
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
           <button className="bg-indigo-600 text-white px-6 py-3 rounded-full hover:bg-indigo-700 transition duration-300">
-            Get Started
+            Proceed
           </button>
           <button className="border-2 border-indigo-600 text-indigo-600 px-6 py-3 rounded-full hover:bg-indigo-600 hover:text-white transition duration-300">
             Learn More
