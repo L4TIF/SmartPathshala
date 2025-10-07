@@ -18,13 +18,13 @@ const Card = ({ title, description, image }) => {
 
 const Home = () => {
   const modules = mockModules
-    .filter((m) => m.id === 'mod-python')
-    .map((m) => ({
-      id: m.id,
-      title: m.moduleName,
-      description: m.description,
-      image: 'https://cdn-icons-png.flaticon.com/512/4359/4359963.png',
-    }))
+    // .filter((m) => m.id === 'mod-python')
+    // .map((m) => ({
+    //   id: m.id,
+    //   title: m.moduleName,
+    //   description: m.description,
+    //   image: 'https://cdn-icons-png.flaticon.com/512/4359/4359963.png',
+    // }))
 
   return (
     <div className="h-auto bg-gray-100 py-10 px-6">

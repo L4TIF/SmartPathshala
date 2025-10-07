@@ -3,12 +3,22 @@ import { Link } from 'react-router-dom'
 import Navbar from '../components/home/navbar'
 import Footer from '../components/home/Footer'
 import { mockModules } from '../data/mockData'
+import { getModules } from '../appwrite/db'
 
 const ModulePage = () => {
   const [modules, setModules] = useState([])
 
   useEffect(() => {
-    setModules(mockModules.filter(m => m.id === 'mod-python'))
+    (async () => {
+      try {
+        const teacherMods = await getModules()
+        const mapped = teacherMods.map(m => ({ id: m.$id, moduleName: m.moduleName, description: m.description }))
+        const combined = [...mockModules.filter(m => m.id === 'mod-python'), ...mapped]
+        setModules(combined)
+      } catch (_) {
+        setModules(mockModules.filter(m => m.id === 'mod-python'))
+      }
+    })()
   }, [])
 
   return (
