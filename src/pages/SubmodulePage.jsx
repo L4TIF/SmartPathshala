@@ -90,7 +90,7 @@ ${imageUrl ? `<img src="${imageUrl}" alt="${title}" />` : ''}
 
                     <div className="bg-white rounded-2xl shadow p-6">
                         <h2 className="text-xl font-semibold mb-2 text-gray-800">Code Snippet</h2>
-                        <pre className="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-auto"><code>{subModule?.codeSnippet}</code></pre>
+                        <pre className="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-auto"><code>{subModule?.codeSnippets}</code></pre>
                     </div>
 
                     <div className="mt-6 flex justify-end gap-3">
