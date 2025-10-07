@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { account } from '../../lib/appwrite';
 
 const Navbar = () => {
@@ -7,6 +7,8 @@ const Navbar = () => {
   const [isAuthed, setIsAuthed] = useState(false);
   const [checking, setChecking] = useState(true);
   const navigate = useNavigate();
+  const location = useLocation();
+  const isHome = location.pathname === '/';
 
   useEffect(() => {
     let mounted = true;
@@ -47,12 +49,21 @@ const Navbar = () => {
             {/* Auth Action */}
             {!checking && (
               isAuthed ? (
-                <button
-                  onClick={handleLogout}
-                  className="ml-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
-                >
-                  Logout
-                </button>
+                isHome ? (
+                  <Link
+                    to="/teacher-dashboard"
+                    className="ml-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+                  >
+                    Go to Teacher Dashboard
+                  </Link>
+                ) : (
+                  <button
+                    onClick={handleLogout}
+                    className="ml-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+                  >
+                    Logout
+                  </button>
+                )
               ) : (
                 <Link
                   to="/teacher-auth"
@@ -114,12 +125,21 @@ const Navbar = () => {
           <div className="px-4 py-3">
             {!checking && (
               isAuthed ? (
-                <button
-                  onClick={handleLogout}
-                  className="block w-full text-center bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition"
-                >
-                  Logout
-                </button>
+                isHome ? (
+                  <Link
+                    to="/teacher-dashboard"
+                    className="block w-full text-center bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition"
+                  >
+                    Go to Teacher Dashboard
+                  </Link>
+                ) : (
+                  <button
+                    onClick={handleLogout}
+                    className="block w-full text-center bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition"
+                  >
+                    Logout
+                  </button>
+                )
               ) : (
                 <Link
                   to="/teacher-auth"

@@ -10,22 +10,22 @@ export const getModules = async () => {
   return response.documents;
 };
 
-export const createModule = async ({ moduleName, description }) => {
+export const createModule = async ({ moduleName, description, coverImage, teacherName }) => {
   const response = await databases.createDocument(
     config.databaseId,
     config.collectionId,
     ID.unique(),
-    { moduleName, description }
+    { moduleName, description, coverImage: coverImage || '', teacher: teacherName }
   );
   return response;
 };
 
-export const updateModule = async (moduleId, { moduleName, description }) => {
+export const updateModule = async (moduleId, { moduleName, description, coverImage }) => {
   const response = await databases.updateDocument(
     config.databaseId,
     config.collectionId,
     moduleId,
-    { moduleName, description }
+    { moduleName, description, coverImage }
   );
   return response;
 };
@@ -42,6 +42,7 @@ export const deleteModule = async (moduleId) => {
 
 
 export const getSubModules = async (moduleId) => {
+  console.log("moduleId", moduleId)
   const response = await databases.listDocuments(
     config.databaseId,
     config.submodulesCollectionId,
@@ -55,8 +56,10 @@ export const createSubModule = async ({ moduleId, title, content, imageUrl, code
     config.databaseId,
     config.submodulesCollectionId,
     ID.unique(),
-    { moduleId, title, content, imageUrl, codeSnippet, resourceName }
+    { title, content, imageUrl, codeSnippet, resourceName, moduleId }
   );
+
+  console.log("response", response)
   return response;
 };
 

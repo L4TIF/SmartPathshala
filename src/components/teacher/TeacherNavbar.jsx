@@ -28,7 +28,7 @@ const TeacherNavbar = () => {
                     <Link to="/teacher-dashboard" className="text-2xl font-bold">SmartPathshala • Teacher</Link>
                     <div className="hidden md:flex items-center space-x-6">
                         <Link to="/teacher-dashboard" className="hover:underline">Dashboard</Link>
-                        <Link to="/modules" className="hover:underline">Modules</Link>
+                        {/* <Link to="/modules" className="hover:underline">Modules</Link> */}
                         {!checking && (
                             isAuthed ? (
                                 <button onClick={handleLogout} className="px-4 py-1.5 bg-white text-indigo-700 rounded-lg hover:bg-indigo-50 transition">Logout</button>
