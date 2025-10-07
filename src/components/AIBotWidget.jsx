@@ -7,7 +7,7 @@ import { MessageSquare, X, Send, Loader, BookOpen, Search } from 'lucide-react';
 // Use the specified model for text generation with Google Search grounding.
 const GEMINI_MODEL = "gemini-2.5-flash-preview-05-20";
 const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
-const API_KEY = ""; // Canvas will automatically populate this for the fetch call
+const API_KEY = "AIzaSyDWxWGIhmh_j03_XmiHJmvNasAz8b9nILc"; // Canvas will automatically populate this for the fetch call
 
 const SYSTEM_PROMPT = {
   parts: [{
