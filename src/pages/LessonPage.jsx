@@ -4,6 +4,7 @@ import { mockModules } from '../data/mockData'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchSubmodules } from '../store/slices/modulesSlice'
 import StudentDoubtModal from './StudentDoubtModal'
+import { progressService } from '../lib/progressService'
 
 const LessonPage = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -17,6 +18,15 @@ const LessonPage = () => {
     const mockMod = mockModules.find(m => m.id === moduleId) || null
     setModuleInfo(mockMod)
     dispatch(fetchSubmodules(moduleId))
+
+    // Track course opening
+    if (mockMod) {
+      progressService.trackCourseOpen(
+        moduleId,
+        mockMod.title,
+        mockMod.image || 'https://via.placeholder.com/300x200?text=Course'
+      );
+    }
   }, [moduleId, dispatch])
 
   const handleDownload = (subModule) => {

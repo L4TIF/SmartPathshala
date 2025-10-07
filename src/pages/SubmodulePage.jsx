@@ -2,6 +2,7 @@ import React, { useMemo } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { mockSubmodulesByModuleId, mockModules } from '../data/mockData'
 import { getSubModules, getModules } from '../appwrite/db'
+import { progressService } from '../lib/progressService'
 
 const SubmodulePage = () => {
     const navigate = useNavigate()
@@ -36,6 +37,13 @@ const SubmodulePage = () => {
             }
         })()
     }, [moduleId, subId])
+
+    // Track lesson completion when component mounts
+    React.useEffect(() => {
+        if (subModule && moduleId) {
+            progressService.trackLessonCompletion(moduleId, subId);
+        }
+    }, [subModule, moduleId, subId])
 
     const handleDownloadAll = () => {
         const title = subModule?.title || 'Submodule'
