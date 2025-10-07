@@ -12,7 +12,9 @@ const ModulePage = () => {
     (async () => {
       try {
         const teacherMods = await getModules()
-        const mapped = teacherMods.map(m => ({ id: m.$id, moduleName: m.moduleName, description: m.description }))
+        console.log(teacherMods)
+        const mapped = teacherMods.map(m => ({ id: m.$id, moduleName: m.moduleName, description: m.description, teacherName: m?.teacher || 'Unknown' }))
+        console.log(mapped)
         const combined = [...mockModules.filter(m => m.id === 'mod-python'), ...mapped]
         setModules(combined)
       } catch (_) {
@@ -39,11 +41,12 @@ const ModulePage = () => {
                     />
                     <div>
                       <h3 className="text-lg font-semibold mb-1 text-gray-800">{module.moduleName}</h3>
-                      <p className="text-gray-600 text-sm">{module.description}</p>
+                      <p className="text-gray-600 text-sm line-clamp-2">{module.description}</p>
                     </div>
                   </div>
-                  <div className="mt-4">
+                  <div className="mt-4 flex justify-between items-center gap-2">
                     <span className="inline-block text-indigo-600 text-sm font-medium">View Lessons →</span>
+                    <span className="inline-block text-gray-600 text-sm font-medium">By {module.teacherName || 'Unknown'}</span>
                   </div>
                 </div>
               </Link>

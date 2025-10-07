@@ -14,7 +14,7 @@ const CoursesGrid = ({ modules, loading, onOpen, onEdit, onDelete }) => {
                         <div key={m.$id} className="border rounded-xl p-4 hover:shadow transition flex flex-col gap-3">
                             <div>
                                 <div className="font-semibold text-gray-800">{m.moduleName}</div>
-                                <div className="text-xs text-gray-500">By {m.teacherName || 'Unknown'}</div>
+                                <div className="text-xs text-gray-500">By {m.teacher || 'Unknown'}</div>
                                 {m.coverImage && (<img src={m.coverImage} alt="cover" className="mt-2 w-full h-28 object-cover rounded" />)}
                                 <div className="text-sm text-gray-600 line-clamp-3 mt-2">{m.description}</div>
                             </div>
