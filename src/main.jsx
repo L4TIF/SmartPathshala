@@ -6,6 +6,10 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Home from './pages/Home.jsx';
 import LessonPage from './pages/LessonPage.jsx';
 import ModulePage from './pages/ModulePage.jsx';
+import TeacherAuthPage from './pages/TeacherAuth.jsx';
+import ExamPage from './pages/ExamPage.jsx';
+import SubmodulePage from './pages/SubmodulePage.jsx';
+import ModuleExamPage from './pages/ModuleExamPage.jsx';
 
 
 let router = createBrowserRouter([
@@ -24,6 +28,22 @@ let router = createBrowserRouter([
       {
         path: "/modules",
         element: <ModulePage />,
+      },
+      {
+        path: "/teacher-auth",
+        element: <TeacherAuthPage />,
+      },
+      {
+        path: "/lesson/:moduleId/exam/:subId",
+        element: <ExamPage />,
+      },
+      {
+        path: "/lesson/:moduleId/sub/:subId",
+        element: <SubmodulePage />,
+      },
+      {
+        path: "/lesson/:moduleId/test",
+        element: <ModuleExamPage />,
       },
     ],
   },

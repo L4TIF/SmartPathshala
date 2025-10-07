@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -8,39 +9,28 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Brand */}
-          <a href="#" className="text-2xl font-bold text-indigo-600">
+          <Link to="/" className="text-2xl font-bold text-indigo-600">
             SmartPathsala
-          </a>
+          </Link>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex space-x-6">
-            <a href="#" className="text-gray-700 hover:text-indigo-600 transition">
+          <div className="hidden md:flex items-center space-x-6">
+            <Link to="/" className="text-gray-700 hover:text-indigo-600 transition">
               Home
-            </a>
-            <a href="#" className="text-gray-700 hover:text-indigo-600 transition">
-              Link
-            </a>
+            </Link>
+            <Link to="/modules" className="text-gray-700 hover:text-indigo-600 transition">
+              Modules
+            </Link>
 
-            {/* Dropdown */}
-            <div className="relative group">
-              <button className="text-gray-700 hover:text-indigo-600 transition">
-                Dropdown ▾
-              </button>
-              <div className="absolute hidden group-hover:block bg-white border rounded-lg mt-2 shadow-lg">
-                <a href="#" className="block px-4 py-2 text-gray-700 hover:bg-indigo-50">
-                  Action
-                </a>
-                <a href="#" className="block px-4 py-2 text-gray-700 hover:bg-indigo-50">
-                  Another Action
-                </a>
-                <hr className="my-1" />
-                <a href="#" className="block px-4 py-2 text-gray-700 hover:bg-indigo-50">
-                  Something Else
-                </a>
-              </div>
-            </div>
 
-            <span className="text-gray-400 cursor-not-allowed">Disabled</span>
+
+            {/* Teacher Login Button */}
+            <Link
+              to="/teacher-auth"
+              className="ml-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+            >
+              Teacher Login
+            </Link>
           </div>
 
           {/* Search Bar (Desktop) */}
@@ -68,30 +58,14 @@ const Navbar = () => {
       {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden bg-white border-t shadow-lg">
-          <a href="#" className="block px-4 py-2 text-gray-700 hover:bg-indigo-50">
+          <Link to="/" className="block px-4 py-2 text-gray-700 hover:bg-indigo-50">
             Home
-          </a>
-          <a href="#" className="block px-4 py-2 text-gray-700 hover:bg-indigo-50">
-            Link
-          </a>
+          </Link>
+          <Link to="/modules" className="block px-4 py-2 text-gray-700 hover:bg-indigo-50">
+            Modules
+          </Link>
 
-          {/* Dropdown (Mobile) */}
-          <details className="px-4 py-2">
-            <summary className="cursor-pointer text-gray-700">Dropdown ▾</summary>
-            <div className="pl-4">
-              <a href="#" className="block py-1 text-gray-700 hover:text-indigo-600">
-                Action
-              </a>
-              <a href="#" className="block py-1 text-gray-700 hover:text-indigo-600">
-                Another Action
-              </a>
-              <a href="#" className="block py-1 text-gray-700 hover:text-indigo-600">
-                Something Else
-              </a>
-            </div>
-          </details>
-
-          <span className="block px-4 py-2 text-gray-400">Disabled</span>
+        
 
           {/* Search (Mobile) */}
           <div className="px-4 py-2 flex items-center space-x-2">
@@ -103,6 +77,16 @@ const Navbar = () => {
             <button className="px-4 py-1 border border-indigo-600 text-indigo-600 rounded-lg hover:bg-indigo-600 hover:text-white transition">
               Go
             </button>
+          </div>
+
+          {/* Teacher Login (Mobile) */}
+          <div className="px-4 py-3">
+            <Link
+              to="/teacher-auth"
+              className="block w-full text-center bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition"
+            >
+              Teacher Login
+            </Link>
           </div>
         </div>
       )}

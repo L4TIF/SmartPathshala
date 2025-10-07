@@ -27,7 +27,7 @@ const IntroSection = () => {
       {/* Right Image Section */}
       <div className="w-full lg:w-1/2 mb-10 lg:mb-0 flex justify-center ">
         <img
-          src="./public/hero1.png"
+          src="/hero1.png"
           alt="Smart Learning"
           className="max-w-xs md:max-w-md lg:max-w-lg drop-shadow-2xl scale-x-[-1]"
         />
