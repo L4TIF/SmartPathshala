@@ -18,7 +18,7 @@ let router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "/lessonPage",
+        path: "/lesson/:moduleId",
         element: <LessonPage />,
       },
       {
