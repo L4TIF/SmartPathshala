@@ -1,27 +1,15 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import Navbar from '../components/home/navbar'
 import Footer from '../components/home/Footer'
-import { mockModules } from '../data/mockData'
-import { getModules } from '../appwrite/db'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchModules } from '../store/slices/modulesSlice'
 
 const ModulePage = () => {
-  const [modules, setModules] = useState([])
+  const dispatch = useDispatch()
+  const modules = useSelector((s) => s.modules.modules)
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const teacherMods = await getModules()
-        console.log(teacherMods)
-        const mapped = teacherMods.map(m => ({ id: m.$id, moduleName: m.moduleName, description: m.description, teacherName: m?.teacher || 'Unknown' }))
-        console.log(mapped)
-        const combined = [...mockModules.filter(m => m.id === 'mod-python'), ...mapped]
-        setModules(combined)
-      } catch (_) {
-        setModules(mockModules.filter(m => m.id === 'mod-python'))
-      }
-    })()
-  }, [])
+  useEffect(() => { dispatch(fetchModules()) }, [dispatch])
 
   return (
     <>

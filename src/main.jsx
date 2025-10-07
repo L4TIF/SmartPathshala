@@ -10,6 +10,8 @@ import TeacherAuthPage from './pages/TeacherAuth.jsx';
 import ExamPage from './pages/ExamPage.jsx';
 import SubmodulePage from './pages/SubmodulePage.jsx';
 import ModuleExamPage from './pages/ModuleExamPage.jsx';
+import { Provider } from 'react-redux';
+import { store } from './store/index.js';
 import TeacherDashboard from './pages/TeacherDashboard.jsx';
 import RequireAuth from './routes/RequireAuth.jsx';
 import { registerSW } from 'virtual:pwa-register'
@@ -67,6 +69,8 @@ if ('serviceWorker' in navigator) {
 }
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>
   </StrictMode>,
 )

@@ -1,27 +1,31 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { account } from '../../lib/appwrite';
+import { useSelector, useDispatch } from 'react-redux';
+import { setAuthenticated, setLoggedOut } from '../../store/slices/authSlice';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isAuthed, setIsAuthed] = useState(false);
+  const dispatch = useDispatch();
+  const isAuthed = useSelector((s) => s.auth.isAuthenticated);
   const [checking, setChecking] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
-  const isHome = location.pathname === '/';
+  const isHome = location.pathname !== '/teacher-dashboard';
 
   useEffect(() => {
+    console.log(location.pathname)
     let mounted = true;
     account.get()
-      .then(() => { if (mounted) { setIsAuthed(true); setChecking(false); } })
-      .catch(() => { if (mounted) { setIsAuthed(false); setChecking(false); } });
+      .then(async () => { if (mounted) { try { const me = await account.get(); dispatch(setAuthenticated(me)); } catch { } setChecking(false); } })
+      .catch(() => { if (mounted) { dispatch(setLoggedOut()); setChecking(false); } });
     return () => { mounted = false };
   }, []);
 
   const handleLogout = async () => {
     try {
       await account.deleteSession('current');
-      setIsAuthed(false);
+      dispatch(setLoggedOut());
       navigate('/');
     } catch (_) { }
   };

@@ -2,41 +2,24 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import Navbar from '../components/home/navbar'
 import Footer from '../components/home/Footer'
-import { mockSubmodulesByModuleId, mockModules } from '../data/mockData'
-import { getSubModules, getModules } from '../appwrite/db'
+import { mockModules } from '../data/mockData'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchSubmodules } from '../store/slices/modulesSlice'
 import StudentDoubtModal from './StudentDoubtModal'
 
 const LessonPage = () => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate()
   const { moduleId } = useParams()
-  const [subModules, setSubModules] = useState([])
+  const dispatch = useDispatch()
+  const subModules = useSelector((s) => s.modules.submodulesByModuleId[moduleId] || [])
   const [moduleInfo, setModuleInfo] = useState(null)
 
   useEffect(() => {
-    (async () => {
-      const mockMod = mockModules.find(m => m.id === moduleId)
-      try {
-        const mods = await getModules()
-        const mappedMods = mods.map(m => ({ id: m.$id, moduleName: m.moduleName, description: m.description }))
-        const found = [...mappedMods, ...mockModules].find(m => m.id === moduleId) || null
-        setModuleInfo(found || mockMod || null)
-      } catch (_) {
-        setModuleInfo(mockMod || null)
-      }
-      try {
-        const subs = await getSubModules(moduleId)
-        const mappedSubs = subs.map(s => ({ id: s.$id, title: s.title, content: s.content, resourceName: s.resourceName, imageUrl: s.imageUrl, codeSnippet: s.codeSnippet }))
-        const combined = [
-          ...((mockSubmodulesByModuleId[moduleId]) || []),
-          ...mappedSubs,
-        ]
-        setSubModules(combined)
-      } catch (_) {
-        setSubModules(((mockSubmodulesByModuleId[moduleId]) || []))
-      }
-    })()
-  }, [moduleId])
+    const mockMod = mockModules.find(m => m.id === moduleId) || null
+    setModuleInfo(mockMod)
+    dispatch(fetchSubmodules(moduleId))
+  }, [moduleId, dispatch])
 
   const handleDownload = (subModule) => {
     const blob = new Blob([subModule.content || ''], { type: 'text/plain;charset=utf-8' })
@@ -75,7 +58,7 @@ const LessonPage = () => {
               </button>
             </div>
             {
-              isOpen && <StudentDoubtModal setIsOpen={setIsOpen}/>
+              isOpen && <StudentDoubtModal setIsOpen={setIsOpen} />
             }
           </div>
           {moduleInfo && (
