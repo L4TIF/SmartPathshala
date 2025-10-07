@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import Navbar from '../components/home/navbar'
 import Footer from '../components/home/Footer'
 import { mockSubmodulesByModuleId, mockModules } from '../data/mockData'
+import { getSubModules, getModules } from '../appwrite/db'
 import StudentDoubtModal from './StudentDoubtModal'
 
 const LessonPage = () => {
@@ -13,9 +14,28 @@ const LessonPage = () => {
   const [moduleInfo, setModuleInfo] = useState(null)
 
   useEffect(() => {
-    setSubModules(mockSubmodulesByModuleId[moduleId] || [])
-    const found = mockModules.find(m => m.id === moduleId) || null
-    setModuleInfo(found)
+    (async () => {
+      const mockMod = mockModules.find(m => m.id === moduleId)
+      try {
+        const mods = await getModules()
+        const mappedMods = mods.map(m => ({ id: m.$id, moduleName: m.moduleName, description: m.description }))
+        const found = [...mappedMods, ...mockModules].find(m => m.id === moduleId) || null
+        setModuleInfo(found || mockMod || null)
+      } catch (_) {
+        setModuleInfo(mockMod || null)
+      }
+      try {
+        const subs = await getSubModules(moduleId)
+        const mappedSubs = subs.map(s => ({ id: s.$id, title: s.title, content: s.content, resourceName: s.resourceName, imageUrl: s.imageUrl, codeSnippet: s.codeSnippet }))
+        const combined = [
+          ...((mockSubmodulesByModuleId[moduleId]) || []),
+          ...mappedSubs,
+        ]
+        setSubModules(combined)
+      } catch (_) {
+        setSubModules(((mockSubmodulesByModuleId[moduleId]) || []))
+      }
+    })()
   }, [moduleId])
 
   const handleDownload = (subModule) => {

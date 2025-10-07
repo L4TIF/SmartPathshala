@@ -3,15 +3,40 @@ import { useNavigate, useParams } from 'react-router-dom'
 import Navbar from '../components/home/navbar'
 import Footer from '../components/home/Footer'
 import { mockSubmodulesByModuleId, mockModules } from '../data/mockData'
+import { getSubModules, getModules } from '../appwrite/db'
 
 const SubmodulePage = () => {
     const navigate = useNavigate()
     const { moduleId, subId } = useParams()
 
-    const moduleInfo = useMemo(() => mockModules.find(m => m.id === moduleId) || null, [moduleId])
-    const subModule = useMemo(() => {
-        const list = mockSubmodulesByModuleId[moduleId] || []
-        return list.find(s => s.id === subId) || null
+    const [moduleInfo, setModuleInfo] = React.useState(null)
+    const [subModule, setSubModule] = React.useState(null)
+
+    React.useEffect(() => {
+        (async () => {
+            const mockMod = mockModules.find(m => m.id === moduleId) || null
+            try {
+                const mods = await getModules()
+                const mappedMods = mods.map(m => ({ id: m.$id, moduleName: m.moduleName, description: m.description }))
+                const found = [...mappedMods, ...mockModules].find(m => m.id === moduleId) || null
+                setModuleInfo(found || mockMod)
+            } catch (_) {
+                setModuleInfo(mockMod)
+            }
+
+            try {
+                const subs = await getSubModules(moduleId)
+                const mappedSubs = subs.map(s => ({ id: s.$id, title: s.title, content: s.content, resourceName: s.resourceName, imageUrl: s.imageUrl, codeSnippet: s.codeSnippet }))
+                const list = [
+                    ...((mockSubmodulesByModuleId[moduleId]) || []),
+                    ...mappedSubs,
+                ]
+                setSubModule(list.find(s => s.id === subId) || null)
+            } catch (_) {
+                const list = ((mockSubmodulesByModuleId[moduleId]) || [])
+                setSubModule(list.find(s => s.id === subId) || null)
+            }
+        })()
     }, [moduleId, subId])
 
     const handleDownloadAll = () => {

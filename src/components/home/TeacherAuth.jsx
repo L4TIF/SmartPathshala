@@ -1,21 +1,41 @@
 import React, { useState } from 'react'
+import { ID } from 'appwrite'
+import { account } from '../../lib/appwrite'
+import { useNavigate } from 'react-router-dom'
 
 const TeacherAuth = () => {
+    const navigate = useNavigate()
     const [mode, setMode] = useState('login')
     const [form, setForm] = useState({ name: '', email: '', password: '' })
     const [message, setMessage] = useState('')
+    const [error, setError] = useState('')
+    const [loading, setLoading] = useState(false)
 
     const handleChange = (e) => {
         const { name, value } = e.target
         setForm((prev) => ({ ...prev, [name]: value }))
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
-        if (mode === 'login') {
-            setMessage(`Logged in as ${form.email} (mock)`) // mock only
-        } else {
-            setMessage(`Account created for ${form.email} (mock)`) // mock only
+        setMessage('')
+        setError('')
+        setLoading(true)
+        try {
+            if (mode === 'signup') {
+                await account.create(ID.unique(), form.email, form.password, form.name || undefined)
+                await account.createEmailPasswordSession(form.email, form.password)
+                setMessage('Signup successful. You are now logged in.')
+            } else {
+                await account.createEmailPasswordSession(form.email, form.password)
+                setMessage('Login successful.')
+            }
+            // Optional: redirect to modules after a short delay
+            setTimeout(() => navigate('/teacher-dashboard'), 500)
+        } catch (err) {
+            setError(err?.message || 'Authentication failed')
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -78,12 +98,16 @@ const TeacherAuth = () => {
                     </div>
                     <button
                         type="submit"
-                        className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition"
+                        className={`w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+                        disabled={loading}
                     >
-                        {mode === 'login' ? 'Login' : 'Create Account'}
+                        {loading ? 'Please wait…' : (mode === 'login' ? 'Login' : 'Create Account')}
                     </button>
                 </form>
 
+                {error && (
+                    <p className="mt-4 text-center text-red-600 text-sm">{error}</p>
+                )}
                 {message && (
                     <p className="mt-4 text-center text-green-600 text-sm">{message}</p>
                 )}
