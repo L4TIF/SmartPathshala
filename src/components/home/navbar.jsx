@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { account } from '../../lib/appwrite';
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { account } from "../../lib/appwrite";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -8,24 +8,77 @@ const Navbar = () => {
   const [checking, setChecking] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
-  const isHome = location.pathname === '/';
+  const isHome = location.pathname === "/";
 
+  // ✅ Google Translate setup (works for both desktop & mobile)
+  useEffect(() => {
+    const addScript = document.createElement("script");
+    addScript.src =
+      "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+    document.body.appendChild(addScript);
+
+    window.googleTranslateElementInit = () => {
+      new window.google.translate.TranslateElement(
+        {
+          pageLanguage: "en",
+          includedLanguages: "en,hi,ta,te,bn,gu,pa,ml,mr,fr",
+          layout: window.google.translate.TranslateElement.InlineLayout.HORIZONTAL,
+        },
+        "google_translate_element"
+      );
+    };
+
+    // Basic styling for dropdown
+    const interval = setInterval(() => {
+      const frame = document.querySelector(".goog-te-menu-value");
+      if (frame) {
+        frame.style.background = "white";
+        frame.style.border = "1px solid #d1d5db"; // gray-300
+        frame.style.borderRadius = "8px";
+        frame.style.padding = "3px 8px";
+        frame.style.fontSize = "14px";
+        frame.style.fontFamily = "Inter, sans-serif";
+        clearInterval(interval);
+      }
+    }, 1200);
+  }, []);
+
+  // ✅ Authentication check
   useEffect(() => {
     let mounted = true;
-    const localRole = (() => { try { return localStorage.getItem('role') } catch { return null } })()
-    account.get()
-      .then(() => { if (mounted) { setIsAuthed(true); setChecking(false); } })
-      .catch(() => { if (mounted) { setIsAuthed(!!localRole); setChecking(false); } });
-    return () => { mounted = false };
+    const localRole = (() => {
+      try {
+        return localStorage.getItem("role");
+      } catch {
+        return null;
+      }
+    })();
+    account
+      .get()
+      .then(() => {
+        if (mounted) {
+          setIsAuthed(true);
+          setChecking(false);
+        }
+      })
+      .catch(() => {
+        if (mounted) {
+          setIsAuthed(!!localRole);
+          setChecking(false);
+        }
+      });
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   const handleLogout = async () => {
     try {
-      await account.deleteSession('current');
+      await account.deleteSession("current");
       setIsAuthed(false);
-      try { localStorage.removeItem('role') } catch (_) { }
-      navigate('/');
-    } catch (_) { }
+      localStorage.removeItem("role");
+      navigate("/");
+    } catch (_) {}
   };
 
   return (
@@ -33,10 +86,13 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
 
-          {/* Logo + Brand Name together */}
+          {/* Logo */}
           <Link to="/" className="flex items-center space-x-1">
-            {/* <img src="/logo.jpeg" alt="SmartPathshala Logo" className="h-10 w-auto" /> */}
-            <span className="text-2xl font-bold text-indigo-600">SmartPathsala</span>
+            <span className="text-2xl font-bold text-indigo-600 leading-tight text-center">
+              Smart
+              <br />
+              <span className="text-gray-800">Pathshala</span>
+            </span>
           </Link>
 
           {/* Desktop Menu */}
@@ -48,17 +104,15 @@ const Navbar = () => {
               Modules
             </Link>
 
-
-
-            {/* Auth Action */}
-            {!checking && (
-              isAuthed ? (
+            {/* Auth Buttons */}
+            {!checking &&
+              (isAuthed ? (
                 isHome ? (
                   <Link
                     to="/teacher-dashboard"
                     className="ml-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
                   >
-                    Go to Teacher Dashboard
+                    Go to Dashboard
                   </Link>
                 ) : (
                   <button
@@ -75,12 +129,11 @@ const Navbar = () => {
                 >
                   Teacher Login
                 </Link>
-              )
-            )}
+              ))}
           </div>
 
-          {/* Search Bar (Desktop) */}
-          <div className="hidden md:flex items-center space-x-2">
+          {/* Search + Google Translate */}
+          <div className="hidden md:flex items-center space-x-3">
             <input
               type="text"
               placeholder="Search"
@@ -89,6 +142,16 @@ const Navbar = () => {
             <button className="px-4 py-1 border border-indigo-600 text-indigo-600 rounded-lg hover:bg-indigo-600 hover:text-white transition">
               Search
             </button>
+
+            {/* 🌐 Google Translate Dropdown (visible on all screens via responsive classes) */}
+            <div
+              id="google_translate_element"
+              className="ml-3 flex items-center h-8 translate-element"
+              style={{
+                transform: "scale(0.9)",
+                transformOrigin: "right center",
+              }}
+            ></div>
           </div>
 
           {/* Mobile Menu Button */}
@@ -111,7 +174,17 @@ const Navbar = () => {
             Modules
           </Link>
 
-
+          {/* ✅ Google Translate visible on mobile too */}
+          <div className="px-4 py-3 flex justify-center">
+            <div
+              id="google_translate_element"
+              className="translate-element"
+              style={{
+                transform: "scale(0.9)",
+                transformOrigin: "center",
+              }}
+            ></div>
+          </div>
 
           {/* Search (Mobile) */}
           <div className="px-4 py-2 flex items-center space-x-2">
@@ -125,16 +198,16 @@ const Navbar = () => {
             </button>
           </div>
 
-          {/* Auth Action (Mobile) */}
+          {/* Auth (Mobile) */}
           <div className="px-4 py-3">
-            {!checking && (
-              isAuthed ? (
+            {!checking &&
+              (isAuthed ? (
                 isHome ? (
                   <Link
                     to="/teacher-dashboard"
                     className="block w-full text-center bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition"
                   >
-                    Go to Teacher Dashboard
+                    Go to Dashboard
                   </Link>
                 ) : (
                   <button
@@ -151,8 +224,7 @@ const Navbar = () => {
                 >
                   Teacher Login
                 </Link>
-              )
-            )}
+              ))}
           </div>
         </div>
       )}
@@ -161,4 +233,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-

@@ -9,9 +9,8 @@ const IntroSection = () => {
           Welcome to <span className="text-indigo-600">SmartPathshala</span>
         </h1>
         <p className="text-gray-600 text-lg md:text-xl">
-          Empower your learning journey with interactive lessons, expert
-          guidance, and AI-powered personalized education. Start building your
-          future — one smart path at a time.
+          Namaste! We bring the light of learning directly to your screen. No matter where you live, 
+          SmartPathshala gives you simple, friendly access to lessons and doubt-solving so you can achieve your big dreams. Let's grow a brighter future, together!
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
