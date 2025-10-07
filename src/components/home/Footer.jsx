@@ -8,9 +8,9 @@ const Footer = () => {
 
         {/* Logo and About */}
         <div>
-          <h2 className="text-2xl font-bold text-white mb-3">EduLearn</h2>
+          <h2 className="text-2xl font-bold text-white mb-3">SmartPathshala</h2>
           <p className="text-sm">
-            EduLearn is your trusted platform for online learning. Join millions of learners around the world to achieve your goals.
+            SmartPathshala is your trusted platform for online learning. Join millions of learners around the world to achieve your goals.
           </p>
         </div>
 
@@ -52,7 +52,7 @@ const Footer = () => {
       </div>
 
       <div className="border-t border-gray-700 mt-8 pt-4 text-center text-sm text-gray-400">
-        © {new Date().getFullYear()} EduLearn. All rights reserved.
+        © {new Date().getFullYear()} SmartPathshala. All rights reserved.
       </div>
     </footer>
   );
