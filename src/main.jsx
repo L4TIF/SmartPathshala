@@ -15,6 +15,13 @@ import { store } from './store/index.js';
 import TeacherDashboard from './pages/TeacherDashboard.jsx';
 import RequireAuth from './routes/RequireAuth.jsx';
 import StudentLayout from './components/layout/StudentLayout.jsx';
+import TeacherLayout from './components/layout/TeacherLayout.jsx';
+import YourCourses from './pages/teacher/YourCourses.jsx';
+import CreateCourse from './pages/teacher/CreateCourse.jsx';
+import Analytics from './pages/teacher/Analytics.jsx';
+import Doubts from './pages/teacher/Doubts.jsx';
+import CourseDetail from './pages/teacher/CourseDetail.jsx';
+import EditCourse from './pages/teacher/EditCourse.jsx';
 import { registerSW } from 'virtual:pwa-register'
 registerSW({ immediate: true })
 
@@ -55,7 +62,55 @@ let router = createBrowserRouter([
         path: "/teacher-dashboard",
         element: (
           <RequireAuth>
-            <TeacherDashboard />
+            <TeacherLayout><YourCourses /></TeacherLayout>
+          </RequireAuth>
+        ),
+      },
+      {
+        path: "/teacher-dashboard/courses",
+        element: (
+          <RequireAuth>
+            <TeacherLayout><YourCourses /></TeacherLayout>
+          </RequireAuth>
+        ),
+      },
+      {
+        path: "/teacher-dashboard/create",
+        element: (
+          <RequireAuth>
+            <TeacherLayout><CreateCourse /></TeacherLayout>
+          </RequireAuth>
+        ),
+      },
+      {
+        path: "/teacher-dashboard/analytics",
+        element: (
+          <RequireAuth>
+            <TeacherLayout><Analytics /></TeacherLayout>
+          </RequireAuth>
+        ),
+      },
+      {
+        path: "/teacher-dashboard/doubts",
+        element: (
+          <RequireAuth>
+            <TeacherLayout><Doubts /></TeacherLayout>
+          </RequireAuth>
+        ),
+      },
+      {
+        path: "/teacher-dashboard/courses/:moduleId",
+        element: (
+          <RequireAuth>
+            <TeacherLayout><CourseDetail /></TeacherLayout>
+          </RequireAuth>
+        ),
+      },
+      {
+        path: "/teacher-dashboard/courses/:moduleId/edit",
+        element: (
+          <RequireAuth>
+            <TeacherLayout><EditCourse /></TeacherLayout>
           </RequireAuth>
         ),
       },
