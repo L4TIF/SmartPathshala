@@ -1,5 +1,5 @@
 import React from "react";
-import { FaFacebook, FaInstagram, FaLinkedin, FaTwitter, FaYoutube } from "react-icons/fa";
+import { Facebook, Instagram, Linkedin, Twitter, Youtube } from "lucide-react";
 
 const Footer = () => {
   return (
@@ -41,11 +41,11 @@ const Footer = () => {
         <div>
           <h3 className="text-xl font-semibold text-white mb-4">Follow Us</h3>
           <div className="flex space-x-4 text-xl">
-            <a href="https://facebook.com" target="_blank" rel="noreferrer" className="hover:text-white"><FaFacebook /></a>
-            <a href="https://twitter.com" target="_blank" rel="noreferrer" className="hover:text-white"><FaTwitter /></a>
-            <a href="https://instagram.com" target="_blank" rel="noreferrer" className="hover:text-white"><FaInstagram /></a>
-            <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="hover:text-white"><FaLinkedin /></a>
-            <a href="https://youtube.com" target="_blank" rel="noreferrer" className="hover:text-white"><FaYoutube /></a>
+            <a href="https://facebook.com" target="_blank" rel="noreferrer" className="hover:text-white"><Facebook size={22} /></a>
+            <a href="https://twitter.com" target="_blank" rel="noreferrer" className="hover:text-white"><Twitter size={22} /></a>
+            <a href="https://instagram.com" target="_blank" rel="noreferrer" className="hover:text-white"><Instagram size={22} /></a>
+            <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="hover:text-white"><Linkedin size={22} /></a>
+            <a href="https://youtube.com" target="_blank" rel="noreferrer" className="hover:text-white"><Youtube size={22} /></a>
           </div>
         </div>
 
