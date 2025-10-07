@@ -32,7 +32,7 @@ const Home = () => {
 
   return (
     <div className="h-auto bg-gray-100 py-10 px-6">
-      <h2 className="text-2xl font-bold text-left mb-6 text-gray-800">Available Courses</h2>
+      <h2 className="text-2xl font-bold text-left mb-6 text-gray-800">Popular Courses</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
         {modules.map((module) => (
           <Link key={module.id} to={`/lesson/${module.id}`} className="block">

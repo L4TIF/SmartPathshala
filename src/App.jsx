@@ -5,6 +5,7 @@ import AIBotWidget from "./components/AIBotWidget";
 const App = () => {
   return (
     <>
+    
       <Outlet />
       <AIBotWidget className="fixed bottom-4 right-4 z-50" />
     </>

@@ -14,6 +14,7 @@ import { Provider } from 'react-redux';
 import { store } from './store/index.js';
 import TeacherDashboard from './pages/TeacherDashboard.jsx';
 import RequireAuth from './routes/RequireAuth.jsx';
+import StudentLayout from './components/layout/StudentLayout.jsx';
 import { registerSW } from 'virtual:pwa-register'
 registerSW({ immediate: true })
 
@@ -24,15 +25,15 @@ let router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Home />,
+        element: <StudentLayout><Home /></StudentLayout>,
       },
       {
         path: "/lesson/:moduleId",
-        element: <LessonPage />,
+        element: <StudentLayout><LessonPage /></StudentLayout>,
       },
       {
         path: "/modules",
-        element: <ModulePage />,
+        element: <StudentLayout><ModulePage /></StudentLayout>,
       },
       {
         path: "/teacher-auth",
@@ -40,15 +41,15 @@ let router = createBrowserRouter([
       },
       {
         path: "/lesson/:moduleId/exam/:subId",
-        element: <ExamPage />,
+        element: <StudentLayout><ExamPage /></StudentLayout>,
       },
       {
         path: "/lesson/:moduleId/sub/:subId",
-        element: <SubmodulePage />,
+        element: <StudentLayout><SubmodulePage /></StudentLayout>,
       },
       {
         path: "/lesson/:moduleId/test",
-        element: <ModuleExamPage />,
+        element: <StudentLayout><ModuleExamPage /></StudentLayout>,
       },
       {
         path: "/teacher-dashboard",
