@@ -1,7 +1,5 @@
 import React, { useMemo } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import Navbar from '../components/home/navbar'
-import Footer from '../components/home/Footer'
 import { mockSubmodulesByModuleId, mockModules } from '../data/mockData'
 import { getSubModules, getModules } from '../appwrite/db'
 
@@ -68,7 +66,7 @@ ${imageUrl ? `<img src="${imageUrl}" alt="${title}" />` : ''}
 
     return (
         <>
-            
+
             <section className="h-auto bg-gray-100 py-10 px-6">
                 <div className="max-w-4xl mx-auto">
                     <button onClick={() => navigate(-1)} className="text-indigo-600 mb-4">← Back</button>
@@ -99,7 +97,7 @@ ${imageUrl ? `<img src="${imageUrl}" alt="${title}" />` : ''}
                     </div>
                 </div>
             </section>
-            
+
         </>
     )
 }
