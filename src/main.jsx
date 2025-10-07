@@ -10,6 +10,8 @@ import TeacherAuthPage from './pages/TeacherAuth.jsx';
 import ExamPage from './pages/ExamPage.jsx';
 import SubmodulePage from './pages/SubmodulePage.jsx';
 import ModuleExamPage from './pages/ModuleExamPage.jsx';
+import TeacherDashboard from './pages/TeacherDashboard.jsx';
+import RequireAuth from './routes/RequireAuth.jsx';
 
 
 let router = createBrowserRouter([
@@ -44,6 +46,14 @@ let router = createBrowserRouter([
       {
         path: "/lesson/:moduleId/test",
         element: <ModuleExamPage />,
+      },
+      {
+        path: "/teacher-dashboard",
+        element: (
+          <RequireAuth>
+            <TeacherDashboard />
+          </RequireAuth>
+        ),
       },
     ],
   },

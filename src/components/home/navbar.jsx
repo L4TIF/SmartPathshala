@@ -1,8 +1,28 @@
-import React, { useState } from "react";
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from 'react-router-dom';
+import { account } from '../../lib/appwrite';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isAuthed, setIsAuthed] = useState(false);
+  const [checking, setChecking] = useState(true);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    let mounted = true;
+    account.get()
+      .then(() => { if (mounted) { setIsAuthed(true); setChecking(false); } })
+      .catch(() => { if (mounted) { setIsAuthed(false); setChecking(false); } });
+    return () => { mounted = false };
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await account.deleteSession('current');
+      setIsAuthed(false);
+      navigate('/');
+    } catch (_) { }
+  };
 
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50">
@@ -24,13 +44,24 @@ const Navbar = () => {
 
 
 
-            {/* Teacher Login Button */}
-            <Link
-              to="/teacher-auth"
-              className="ml-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
-            >
-              Teacher Login
-            </Link>
+            {/* Auth Action */}
+            {!checking && (
+              isAuthed ? (
+                <button
+                  onClick={handleLogout}
+                  className="ml-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+                >
+                  Logout
+                </button>
+              ) : (
+                <Link
+                  to="/teacher-auth"
+                  className="ml-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+                >
+                  Teacher Login
+                </Link>
+              )
+            )}
           </div>
 
           {/* Search Bar (Desktop) */}
@@ -65,7 +96,7 @@ const Navbar = () => {
             Modules
           </Link>
 
-        
+
 
           {/* Search (Mobile) */}
           <div className="px-4 py-2 flex items-center space-x-2">
@@ -79,14 +110,25 @@ const Navbar = () => {
             </button>
           </div>
 
-          {/* Teacher Login (Mobile) */}
+          {/* Auth Action (Mobile) */}
           <div className="px-4 py-3">
-            <Link
-              to="/teacher-auth"
-              className="block w-full text-center bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition"
-            >
-              Teacher Login
-            </Link>
+            {!checking && (
+              isAuthed ? (
+                <button
+                  onClick={handleLogout}
+                  className="block w-full text-center bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition"
+                >
+                  Logout
+                </button>
+              ) : (
+                <Link
+                  to="/teacher-auth"
+                  className="block w-full text-center bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition"
+                >
+                  Teacher Login
+                </Link>
+              )
+            )}
           </div>
         </div>
       )}
