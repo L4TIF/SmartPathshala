@@ -22,26 +22,43 @@ const Navbar = () => {
     document.body.appendChild(addScript);
 
     window.googleTranslateElementInit = () => {
-      new window.google.translate.TranslateElement(
-        {
-          pageLanguage: "en",
-          includedLanguages: "en,hi,ta,te,bn,gu,pa,ml,mr,fr",
-          layout: window.google.translate.TranslateElement.InlineLayout.HORIZONTAL,
-        },
-        "google_translate_element"
-      );
+      // Initialize desktop translate element
+      if (document.getElementById("google_translate_element_desktop")) {
+        new window.google.translate.TranslateElement(
+          {
+            pageLanguage: "en",
+            includedLanguages: "en,hi,ta,te,bn,gu,pa,ml,mr,fr",
+            layout: window.google.translate.TranslateElement.InlineLayout.HORIZONTAL,
+          },
+          "google_translate_element_desktop"
+        );
+      }
+
+      // Initialize mobile translate element
+      if (document.getElementById("google_translate_element_mobile")) {
+        new window.google.translate.TranslateElement(
+          {
+            pageLanguage: "en",
+            includedLanguages: "en,hi,ta,te,bn,gu,pa,ml,mr,fr",
+            layout: window.google.translate.TranslateElement.InlineLayout.HORIZONTAL,
+          },
+          "google_translate_element_mobile"
+        );
+      }
     };
 
     // Basic styling for dropdown
     const interval = setInterval(() => {
-      const frame = document.querySelector(".goog-te-menu-value");
-      if (frame) {
-        frame.style.background = "white";
-        frame.style.border = "1px solid #d1d5db"; // gray-300
-        frame.style.borderRadius = "8px";
-        frame.style.padding = "3px 8px";
-        frame.style.fontSize = "14px";
-        frame.style.fontFamily = "Inter, sans-serif";
+      const frames = document.querySelectorAll(".goog-te-menu-value");
+      if (frames.length > 0) {
+        frames.forEach(frame => {
+          frame.style.background = "white";
+          frame.style.border = "1px solid #d1d5db"; // gray-300
+          frame.style.borderRadius = "8px";
+          frame.style.padding = "3px 8px";
+          frame.style.fontSize = "14px";
+          frame.style.fontFamily = "Inter, sans-serif";
+        });
         clearInterval(interval);
       }
     }, 1200);
@@ -134,7 +151,7 @@ const Navbar = () => {
 
             {/* 🌐 Google Translate Dropdown (visible on all screens via responsive classes) */}
             <div
-              id="google_translate_element"
+              id="google_translate_element_desktop"
               className="ml-3 flex items-center h-8 translate-element"
               style={{
                 transform: "scale(0.9)",
@@ -163,17 +180,7 @@ const Navbar = () => {
             Modules
           </Link>
 
-          {/* ✅ Google Translate visible on mobile too */}
-          <div className="px-4 py-3 flex justify-center">
-            <div
-              id="google_translate_element"
-              className="translate-element"
-              style={{
-                transform: "scale(0.9)",
-                transformOrigin: "center",
-              }}
-            ></div>
-          </div>
+
 
           {/* Search (Mobile) */}
           <div className="px-4 py-2 flex items-center space-x-2">
@@ -190,6 +197,18 @@ const Navbar = () => {
             >
               Go
             </button>
+          </div>
+
+          {/* ✅ Google Translate visible on mobile too */}
+          <div className="px-4 py-3 flex justify-center">
+            <div
+              id="google_translate_element_mobile"
+              className="translate-element"
+              style={{
+                transform: "scale(1)",
+                transformOrigin: "center",
+              }}
+            ></div>
           </div>
 
           {/* Auth (Mobile) */}
