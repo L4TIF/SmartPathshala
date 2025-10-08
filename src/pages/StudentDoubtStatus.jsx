@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { getDoubts, deleteDoubt } from '../appwrite/db';
-import { MessageCircle, Clock, CheckCircle, Mail, User, Calendar, Trash2, X } from 'lucide-react';
+import { MessageCircle, Clock, CheckCircle, Mail, User, Calendar, Trash2, X, Wifi, WifiOff, Plus } from 'lucide-react';
+import { offlineDoubtService } from '../lib/offlineDoubtService';
+import StudentDoubtModal from './StudentDoubtModal';
 
 const StudentDoubtStatus = () => {
     const [doubts, setDoubts] = useState([]);
@@ -9,9 +11,33 @@ const StudentDoubtStatus = () => {
     const [filteredDoubts, setFilteredDoubts] = useState([]);
     const [deleteConfirm, setDeleteConfirm] = useState(null);
     const [deleting, setDeleting] = useState(false);
+    const [offlineDoubts, setOfflineDoubts] = useState([]);
+    const [isOnline, setIsOnline] = useState(navigator.onLine);
+    const [showDoubtModal, setShowDoubtModal] = useState(false);
 
     useEffect(() => {
         fetchDoubts();
+        loadOfflineDoubts();
+
+        // Network status monitoring
+        const handleOnline = () => setIsOnline(true);
+        const handleOffline = () => setIsOnline(false);
+
+        window.addEventListener('online', handleOnline);
+        window.addEventListener('offline', handleOffline);
+
+        // Periodic sync check
+        const syncInterval = setInterval(() => {
+            if (navigator.onLine) {
+                loadOfflineDoubts();
+            }
+        }, 10000);
+
+        return () => {
+            window.removeEventListener('online', handleOnline);
+            window.removeEventListener('offline', handleOffline);
+            clearInterval(syncInterval);
+        };
     }, []);
 
     useEffect(() => {
@@ -35,6 +61,18 @@ const StudentDoubtStatus = () => {
         } finally {
             setLoading(false);
         }
+    };
+
+    const loadOfflineDoubts = () => {
+        const offline = offlineDoubtService.getOfflineDoubts();
+        setOfflineDoubts(offline);
+    };
+
+    const handleDoubtSubmitted = () => {
+        // Refresh both online and offline doubts
+        fetchDoubts();
+        loadOfflineDoubts();
+        setShowDoubtModal(false);
     };
 
     const handleDeleteDoubt = async (doubtId) => {
@@ -94,7 +132,16 @@ const StudentDoubtStatus = () => {
             <div className="max-w-4xl mx-auto">
                 <div className="text-center mb-8">
                     <h1 className="text-3xl font-bold text-gray-800 mb-4">My Doubt Status</h1>
-                    <p className="text-gray-600">Check the status of your submitted questions and see teacher responses.</p>
+                    <p className="text-gray-600 mb-6">Check the status of your submitted questions and see teacher responses.</p>
+
+                    {/* Create Doubt Button */}
+                    <button
+                        onClick={() => setShowDoubtModal(true)}
+                        className="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-lg hover:shadow-xl"
+                    >
+                        <Plus className="w-5 h-5" />
+                        Ask a New Question
+                    </button>
                 </div>
 
                 {/* Email Filter */}
@@ -122,6 +169,51 @@ const StudentDoubtStatus = () => {
 
                 {/* Doubts List */}
                 <div className="bg-white rounded-lg shadow-md">
+                    {/* Offline Doubts Section */}
+                    {offlineDoubts.length > 0 && (
+                        <div className="p-6 border-b border-gray-200">
+                            <div className="flex items-center gap-2 mb-4">
+                                <WifiOff className="w-5 h-5 text-yellow-600" />
+                                <h3 className="text-lg font-semibold text-gray-800">Offline Doubts</h3>
+                                <span className="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">
+                                    {offlineDoubts.length} pending
+                                </span>
+                            </div>
+                            <div className="space-y-3">
+                                {offlineDoubts.map((doubt) => (
+                                    <div key={doubt.id} className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                                        <div className="flex justify-between items-start mb-2">
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-sm font-medium text-yellow-800">
+                                                    {doubt.subject || 'General Question'}
+                                                </span>
+                                                <span className={`text-xs px-2 py-1 rounded-full ${doubt.status === 'offline_pending'
+                                                    ? 'bg-yellow-200 text-yellow-800'
+                                                    : doubt.status === 'sync_failed'
+                                                        ? 'bg-red-200 text-red-800'
+                                                        : 'bg-green-200 text-green-800'
+                                                    }`}>
+                                                    {doubt.status === 'offline_pending' ? 'Pending Sync' :
+                                                        doubt.status === 'sync_failed' ? 'Sync Failed' :
+                                                            'Synced'}
+                                                </span>
+                                            </div>
+                                            <span className="text-xs text-gray-500">
+                                                {new Date(doubt.createdAt).toLocaleDateString()}
+                                            </span>
+                                        </div>
+                                        <p className="text-sm text-gray-700 mb-2">{doubt.doubt}</p>
+                                        {doubt.status === 'sync_failed' && (
+                                            <p className="text-xs text-red-600">
+                                                ⚠️ Failed to sync. Will retry when online.
+                                            </p>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
                     {loading ? (
                         <div className="text-center py-12">
                             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 mx-auto"></div>
@@ -287,6 +379,11 @@ const StudentDoubtStatus = () => {
                         </div>
                     </div>
                 </div>
+            )}
+
+            {/* Student Doubt Modal */}
+            {showDoubtModal && (
+                <StudentDoubtModal setIsOpen={setShowDoubtModal} onDoubtSubmitted={handleDoubtSubmitted} />
             )}
         </div>
     );
