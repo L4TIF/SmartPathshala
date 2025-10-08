@@ -109,7 +109,7 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-16">
 
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-1">
+          <Link to="/" className="flex mr-4 items-center space-x-1">
             <span className="text-2xl font-bold text-indigo-600 leading-tight text-center">
               Smart
               <br />
@@ -118,7 +118,7 @@ const Navbar = () => {
           </Link>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex items-center space-x-6">
+          <div className="hidden md:flex items-center text-center space-x-6">
             <Link to="/" className="text-gray-700 hover:text-indigo-600 transition">
               Home
             </Link>
@@ -149,7 +149,7 @@ const Navbar = () => {
                 isHome ? (
                   <Link
                     to="/teacher-dashboard"
-                    className="ml-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+                    className="mx-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
                   >
                     Go to Dashboard
                   </Link>
@@ -164,7 +164,7 @@ const Navbar = () => {
               ) : (
                 <Link
                   to="/teacher-auth"
-                  className="ml-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+                  className="ml-4 px-2 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
                 >
                   Teacher Login
                 </Link>
@@ -172,7 +172,7 @@ const Navbar = () => {
           </div>
 
           {/* Search + Google Translate */}
-          <div className="hidden md:flex items-center space-x-3">
+          <div className="hidden ml-4 md:flex items-center space-x-3">
             <input
               type="text"
               value={query}
