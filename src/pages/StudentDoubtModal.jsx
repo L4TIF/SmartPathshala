@@ -1,6 +1,7 @@
 import React, { useState } from "react";
+import { createDoubt } from "../appwrite/db";
 
-const StudentDoubtModal = ({setIsOpen}) => {
+const StudentDoubtModal = ({ setIsOpen }) => {
   // const [isOpen, setIsOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -9,23 +10,43 @@ const StudentDoubtModal = ({setIsOpen}) => {
     doubt: "",
   });
   const [submitted, setSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.name || !formData.email || !formData.doubt) {
-      alert("Please fill all required fields!");
+      setError("Please fill all required fields!");
       return;
     }
-    console.log("Doubt Submitted:", formData);
-    setSubmitted(true);
-    setFormData({ name: "", email: "", subject: "", doubt: "" });
 
-    // Hide success message after 5 seconds
-    setTimeout(() => setSubmitted(false), 5000);
+    setIsLoading(true);
+    setError('');
+
+    try {
+      await createDoubt({
+        name: formData.name,
+        email: formData.email,
+        subject: formData.subject,
+        doubt: formData.doubt,
+        status: 'pending'
+      });
+
+      setSubmitted(true);
+      setFormData({ name: "", email: "", subject: "", doubt: "" });
+
+      // Hide success message after 5 seconds
+      setTimeout(() => setSubmitted(false), 5000);
+    } catch (err) {
+      console.error('Error submitting doubt:', err);
+      setError('Failed to submit doubt. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -42,8 +63,8 @@ const StudentDoubtModal = ({setIsOpen}) => {
               Ask Your Doubt
             </h2>
             <div className="w-full flex justify-end">
-              <button onClick={()=>setIsOpen(false)}>X</button>
-              </div>
+              <button onClick={() => setIsOpen(false)}>X</button>
+            </div>
             <p className="text-sm text-center text-gray-500 mb-5">
               Have a question? Submit your doubt below and your teacher will respond soon.
             </p>
@@ -111,14 +132,21 @@ const StudentDoubtModal = ({setIsOpen}) => {
 
               <button
                 type="submit"
-                className="w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 transition"
+                disabled={isLoading}
+                className="w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Submit Doubt
+                {isLoading ? 'Submitting...' : 'Submit Doubt'}
               </button>
+
+              {error && (
+                <p className="text-red-600 text-center mt-3">
+                  ❌ {error}
+                </p>
+              )}
 
               {submitted && (
                 <p className="text-green-600 text-center mt-3">
-                  ✅ Your doubt has been submitted successfully!
+                  ✅ Your doubt has been submitted successfully! Your teacher will respond soon.
                 </p>
               )}
             </form>

@@ -5,6 +5,7 @@ const config = {
     databaseId: String(import.meta.env.VITE_APPWRITE_DATABASE_ID),
     collectionId: String(import.meta.env.VITE_APPWRITE_COLLECTION_ID),
     submodulesCollectionId: String(import.meta.env.VITE_APPWRITE_SUBMODULES_COLLECTION_ID || ''),
+    doubtsCollectionId: String(import.meta.env.VITE_APPWRITE_DOUBTS_COLLECTION_ID || 'doubts'),
     bucketId: String(import.meta.env.VITE_APPWRITE_BUCKET_ID)
 }
 

@@ -80,3 +80,49 @@ export const deleteSubModule = async (subId) => {
     subId
   );
 };
+
+// Doubts Collection Functions
+export const createDoubt = async ({ name, email, subject, doubt, status = 'pending' }) => {
+  const response = await databases.createDocument(
+    config.databaseId,
+    config.doubtsCollectionId,
+    ID.unique(),
+    {
+      name,
+      email,
+      subject: subject || '',
+      doubt,
+      status,
+      createdAt: new Date().toISOString(),
+      teacherResponse: ''
+    }
+  );
+  return response;
+};
+
+export const getDoubts = async () => {
+  const response = await databases.listDocuments(
+    config.databaseId,
+    config.doubtsCollectionId,
+    [Query.orderDesc('$createdAt')]
+  );
+  return response.documents;
+};
+
+export const updateDoubtStatus = async (doubtId, { status, teacherResponse = '' }) => {
+  const response = await databases.updateDocument(
+    config.databaseId,
+    config.doubtsCollectionId,
+    doubtId,
+    { status, teacherResponse: teacherResponse || '' }
+  );
+  return response;
+};
+
+export const deleteDoubt = async (doubtId) => {
+  await databases.deleteDocument(
+    config.databaseId,
+    config.doubtsCollectionId,
+    doubtId
+  );
+};
