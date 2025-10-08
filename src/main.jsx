@@ -22,6 +22,7 @@ import Analytics from './pages/teacher/Analytics.jsx';
 import Doubts from './pages/teacher/Doubts.jsx';
 import CourseDetail from './pages/teacher/CourseDetail.jsx';
 import EditCourse from './pages/teacher/EditCourse.jsx';
+import StudentDoubtStatus from './pages/StudentDoubtStatus.jsx';
 import { registerSW } from 'virtual:pwa-register'
 registerSW({ immediate: true })
 
@@ -57,6 +58,10 @@ let router = createBrowserRouter([
       {
         path: "/lesson/:moduleId/test",
         element: <StudentLayout><ModuleExamPage /></StudentLayout>,
+      },
+      {
+        path: "/my-doubts",
+        element: <StudentLayout><StudentDoubtStatus /></StudentLayout>,
       },
       {
         path: "/teacher-dashboard",

@@ -1,137 +1,173 @@
-// Push Notification Service for PWA
-// Handles notification permissions and sending
+// Enhanced Notification Service
+// Handles various types of notifications including doubt responses
 
 class NotificationService {
     constructor() {
-        this.permission = Notification.permission;
-        this.isSupported = 'Notification' in window;
+        this.NOTIFICATION_KEY = 'smartpathshala_notifications';
+        this.DOUBT_NOTIFICATIONS_KEY = 'smartpathshala_doubt_notifications';
     }
 
     // Request notification permission
     async requestPermission() {
-        if (!this.isSupported) {
-            console.warn('Notifications not supported');
+        if (!('Notification' in window)) {
+            console.log('This browser does not support notifications');
             return false;
         }
 
-        if (this.permission === 'granted') {
+        if (Notification.permission === 'granted') {
             return true;
         }
 
-        if (this.permission === 'denied') {
-            console.warn('Notification permission denied');
-            return false;
+        if (Notification.permission !== 'denied') {
+            const permission = await Notification.requestPermission();
+            return permission === 'granted';
         }
 
-        try {
-            const permission = await Notification.requestPermission();
-            this.permission = permission;
-            return permission === 'granted';
-        } catch (error) {
-            console.error('Error requesting notification permission:', error);
-            return false;
-        }
+        return false;
     }
 
-    // Send notification
+    // Send basic notification
     async sendNotification(title, options = {}) {
-        if (!this.isSupported || this.permission !== 'granted') {
-            console.warn('Notifications not available');
-            return;
+        const hasPermission = await this.requestPermission();
+
+        if (!hasPermission) {
+            console.log('Notification permission denied');
+            return false;
         }
 
-        const defaultOptions = {
-            body: 'Your message has been processed!',
-            icon: '/icon-192x192.png',
-            badge: '/icon-72x72.png',
-            tag: 'studybuddy-response',
+        const notification = new Notification(title, {
+            icon: '/favicon.ico',
+            badge: '/favicon.ico',
+            ...options
+        });
+
+        // Auto close after 5 seconds
+        setTimeout(() => notification.close(), 5000);
+
+        return notification;
+    }
+
+    // Send doubt answered notification
+    async sendDoubtAnsweredNotification(studentName, doubtSubject) {
+        const title = '🎉 Your Doubt Has Been Answered!';
+        const body = `Hi ${studentName}! Your question about "${doubtSubject}" has been answered by your teacher. Check it out now!`;
+
+        const notification = await this.sendNotification(title, {
+            body,
+            tag: 'doubt-answered',
             requireInteraction: true,
             actions: [
                 {
-                    action: 'open',
-                    title: 'Open StudyBuddy',
-                    icon: '/icon-72x72.png'
-                },
-                {
-                    action: 'dismiss',
-                    title: 'Dismiss',
-                    icon: '/icon-72x72.png'
+                    action: 'view',
+                    title: 'View Response'
                 }
             ]
-        };
+        });
 
-        const notificationOptions = { ...defaultOptions, ...options };
+        // Store notification in local storage
+        this.storeDoubtNotification({
+            type: 'doubt_answered',
+            studentName,
+            doubtSubject,
+            timestamp: new Date().toISOString(),
+            read: false
+        });
 
-        try {
-            const notification = new Notification(title, notificationOptions);
+        return notification;
+    }
 
-            // Handle notification click
-            notification.onclick = (event) => {
-                event.preventDefault();
-                window.focus();
-                notification.close();
+    // Store doubt notification locally
+    storeDoubtNotification(notification) {
+        const notifications = this.getDoubtNotifications();
+        notifications.unshift(notification);
 
-                // Handle action clicks
-                if (event.action === 'open') {
-                    // Focus on the chat widget
-                    const chatButton = document.querySelector('[aria-label*="StudyBuddy"]');
-                    if (chatButton) {
-                        chatButton.click();
-                    }
-                }
-            };
+        // Keep only last 50 notifications
+        const limitedNotifications = notifications.slice(0, 50);
 
-            // Auto-close after 10 seconds
-            setTimeout(() => {
-                notification.close();
-            }, 10000);
+        localStorage.setItem(this.DOUBT_NOTIFICATIONS_KEY, JSON.stringify(limitedNotifications));
+    }
 
-            return notification;
-        } catch (error) {
-            console.error('Error sending notification:', error);
+    // Get stored doubt notifications
+    getDoubtNotifications() {
+        const notifications = localStorage.getItem(this.DOUBT_NOTIFICATIONS_KEY);
+        return notifications ? JSON.parse(notifications) : [];
+    }
+
+    // Mark notification as read
+    markNotificationAsRead(index) {
+        const notifications = this.getDoubtNotifications();
+        if (notifications[index]) {
+            notifications[index].read = true;
+            localStorage.setItem(this.DOUBT_NOTIFICATIONS_KEY, JSON.stringify(notifications));
         }
     }
 
-    // Send message processed notification
-    async sendMessageProcessedNotification(messageCount = 1) {
-        const title = 'StudyBuddy Response Ready!';
-        const body = messageCount > 1
-            ? `${messageCount} of your offline messages have been processed!`
-            : 'Your offline message has been processed!';
+    // Get unread notification count
+    getUnreadCount() {
+        const notifications = this.getDoubtNotifications();
+        return notifications.filter(n => !n.read).length;
+    }
+
+    // Clear all notifications
+    clearAllNotifications() {
+        localStorage.removeItem(this.DOUBT_NOTIFICATIONS_KEY);
+    }
+
+    // Send welcome notification for new students
+    async sendWelcomeNotification(studentName) {
+        const title = '👋 Welcome to SmartPathshala!';
+        const body = `Hi ${studentName}! Welcome to your learning journey. Start exploring modules and don't hesitate to ask questions!`;
 
         return await this.sendNotification(title, {
             body,
-            data: {
-                type: 'message_processed',
-                count: messageCount,
-                timestamp: new Date().toISOString()
+            tag: 'welcome',
+            requireInteraction: false
+        });
+    }
+
+    // Send course completion notification
+    async sendCourseCompletionNotification(courseName) {
+        const title = '🎓 Course Completed!';
+        const body = `Congratulations! You've completed "${courseName}". Great job on your learning journey!`;
+
+        return await this.sendNotification(title, {
+            body,
+            tag: 'course-completed',
+            requireInteraction: false
+        });
+    }
+
+    // Send learning streak notification
+    async sendStreakNotification(streakDays) {
+        const title = '🔥 Learning Streak!';
+        const body = `Amazing! You've maintained a ${streakDays}-day learning streak. Keep it up!`;
+
+        return await this.sendNotification(title, {
+            body,
+            tag: 'learning-streak',
+            requireInteraction: false
+        });
+    }
+
+    // Check for new doubt responses (to be called periodically)
+    async checkForNewDoubtResponses(studentEmail) {
+        try {
+            // This would typically check with your backend
+            // For now, we'll use a simple polling mechanism
+            const lastCheck = localStorage.getItem('lastDoubtCheck');
+            const now = new Date().toISOString();
+
+            if (!lastCheck || new Date(now) - new Date(lastCheck) > 300000) { // 5 minutes
+                localStorage.setItem('lastDoubtCheck', now);
+                // In a real app, you'd fetch from your API here
+                return false;
             }
-        });
-    }
 
-    // Send sync notification
-    async sendSyncNotification(count) {
-        const title = 'Messages Synced';
-        const body = `${count} message${count > 1 ? 's' : ''} sent successfully`;
-
-        return await this.sendNotification(title, {
-            body,
-            icon: '/icon-192x192.png'
-        });
-    }
-
-    // Check if notifications are supported and permitted
-    canSendNotifications() {
-        return this.isSupported && this.permission === 'granted';
-    }
-
-    // Get permission status
-    getPermissionStatus() {
-        return {
-            isSupported: this.isSupported,
-            permission: this.permission,
-            canSend: this.canSendNotifications()
-        };
+            return false;
+        } catch (error) {
+            console.error('Error checking for new doubt responses:', error);
+            return false;
+        }
     }
 }
 

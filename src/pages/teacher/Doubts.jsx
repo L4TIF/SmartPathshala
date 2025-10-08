@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { getDoubts, updateDoubtStatus } from '../../appwrite/db';
-import { MessageCircle, Clock, CheckCircle, X, Send } from 'lucide-react';
+import { getDoubts, updateDoubtStatus, deleteDoubt } from '../../appwrite/db';
+import { MessageCircle, Clock, CheckCircle, X, Send, Trash2 } from 'lucide-react';
+import { notificationService } from '../../lib/notificationService';
 
 const Doubts = () => {
     const [doubts, setDoubts] = useState([]);
@@ -8,6 +9,8 @@ const Doubts = () => {
     const [selectedDoubt, setSelectedDoubt] = useState(null);
     const [response, setResponse] = useState('');
     const [responding, setResponding] = useState(false);
+    const [deleteConfirm, setDeleteConfirm] = useState(null);
+    const [deleting, setDeleting] = useState(false);
 
     useEffect(() => {
         fetchDoubts();
@@ -38,6 +41,9 @@ const Doubts = () => {
                 teacherResponse: response
             });
 
+            // Find the doubt to get student info
+            const doubt = doubts.find(d => d.$id === doubtId);
+
             // Update local state
             setDoubts(doubts.map(doubt =>
                 doubt.$id === doubtId
@@ -45,13 +51,47 @@ const Doubts = () => {
                     : doubt
             ));
 
+            // Send notification to student (if they have notifications enabled)
+            if (doubt) {
+                try {
+                    await notificationService.sendDoubtAnsweredNotification(
+                        doubt.name,
+                        doubt.subject || 'General Question'
+                    );
+                } catch (notificationError) {
+                    console.log('Notification could not be sent:', notificationError);
+                    // Don't fail the response if notification fails
+                }
+            }
+
             setSelectedDoubt(null);
             setResponse('');
+
+            // Show success message
+            alert('Response sent successfully! The student will be notified.');
         } catch (error) {
             console.error('Error responding to doubt:', error);
             alert('Failed to respond. Please try again.');
         } finally {
             setResponding(false);
+        }
+    };
+
+    const handleDeleteDoubt = async (doubtId) => {
+        try {
+            setDeleting(true);
+            await deleteDoubt(doubtId);
+
+            // Update local state
+            setDoubts(doubts.filter(doubt => doubt.$id !== doubtId));
+            setDeleteConfirm(null);
+
+            alert('Doubt deleted successfully!');
+        } catch (error) {
+            console.error('Error deleting doubt:', error);
+            alert('Failed to delete doubt. Please try again.');
+        } finally {
+            setDeleting(false);
         }
     };
 
@@ -142,8 +182,8 @@ const Doubts = () => {
                                         </div>
                                     )}
 
-                                    {doubt.status === 'pending' && (
-                                        <div className="flex gap-2">
+                                    <div className="flex gap-2">
+                                        {doubt.status === 'pending' && (
                                             <button
                                                 onClick={() => setSelectedDoubt(doubt)}
                                                 className="flex items-center gap-1 px-3 py-1 bg-indigo-600 text-white text-sm rounded-md hover:bg-indigo-700 transition"
@@ -151,8 +191,15 @@ const Doubts = () => {
                                                 <Send className="w-3 h-3" />
                                                 Respond
                                             </button>
-                                        </div>
-                                    )}
+                                        )}
+                                        <button
+                                            onClick={() => setDeleteConfirm(doubt)}
+                                            className="flex items-center gap-1 px-3 py-1 bg-red-600 text-white text-sm rounded-md hover:bg-red-700 transition"
+                                        >
+                                            <Trash2 className="w-3 h-3" />
+                                            Delete
+                                        </button>
+                                    </div>
                                 </div>
                             ))}
                         </div>
@@ -207,6 +254,56 @@ const Doubts = () => {
                                 className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {responding ? 'Sending...' : 'Send Response'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Delete Confirmation Modal */}
+            {deleteConfirm && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+                    <div className="bg-white rounded-xl shadow-lg w-full max-w-md p-6 relative">
+                        <button
+                            onClick={() => setDeleteConfirm(null)}
+                            className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+                        >
+                            <X className="w-5 h-5" />
+                        </button>
+
+                        <div className="flex items-center gap-3 mb-4">
+                            <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                                <Trash2 className="w-5 h-5 text-red-600" />
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-semibold text-gray-800">Delete Doubt</h3>
+                                <p className="text-sm text-gray-600">This action cannot be undone</p>
+                            </div>
+                        </div>
+
+                        <div className="mb-6">
+                            <p className="text-gray-700 mb-3">Are you sure you want to delete this doubt?</p>
+                            <div className="bg-gray-50 p-3 rounded-lg">
+                                <p className="text-sm text-gray-600 mb-1"><strong>Student:</strong> {deleteConfirm.name}</p>
+                                <p className="text-sm text-gray-600 mb-1"><strong>Email:</strong> {deleteConfirm.email}</p>
+                                <p className="text-sm text-gray-600 mb-2"><strong>Subject:</strong> {deleteConfirm.subject || 'General'}</p>
+                                <p className="text-sm text-gray-800"><strong>Question:</strong> {deleteConfirm.doubt}</p>
+                            </div>
+                        </div>
+
+                        <div className="flex gap-3">
+                            <button
+                                onClick={() => setDeleteConfirm(null)}
+                                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={() => handleDeleteDoubt(deleteConfirm.$id)}
+                                disabled={deleting}
+                                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                {deleting ? 'Deleting...' : 'Delete Doubt'}
                             </button>
                         </div>
                     </div>

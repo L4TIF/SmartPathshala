@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { account } from '../../lib/appwrite';
 import { useSelector, useDispatch } from 'react-redux';
 import { setAuthenticated, setLoggedOut } from '../../store/slices/authSlice';
+import { notificationService } from '../../lib/notificationService';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -13,6 +14,7 @@ const Navbar = () => {
   const location = useLocation();
   const isHome = location.pathname !== '/teacher-dashboard';
   const [query, setQuery] = useState('');
+  const [unreadCount, setUnreadCount] = useState(0);
 
   // ✅ Google Translate setup (works for both desktop & mobile)
   useEffect(() => {
@@ -74,6 +76,21 @@ const Navbar = () => {
     return () => { mounted = false };
   }, []);
 
+  // ✅ Check for unread notifications
+  useEffect(() => {
+    const checkUnreadCount = () => {
+      const count = notificationService.getUnreadCount();
+      setUnreadCount(count);
+    };
+
+    checkUnreadCount();
+
+    // Check every 30 seconds for new notifications
+    const interval = setInterval(checkUnreadCount, 30000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   const handleLogout = async () => {
     try {
       await account.deleteSession('current');
@@ -103,6 +120,14 @@ const Navbar = () => {
             </Link>
             <Link to="/modules" className="text-gray-700 hover:text-indigo-600 transition">
               Modules
+            </Link>
+            <Link to="/my-doubts" className="text-gray-700 hover:text-indigo-600 transition relative">
+              My Doubts
+              {unreadCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  {unreadCount}
+                </span>
+              )}
             </Link>
 
             {/* Auth Buttons */}
@@ -178,6 +203,14 @@ const Navbar = () => {
           </Link>
           <Link to="/modules" className="block px-4 py-2 text-gray-700 hover:bg-indigo-50">
             Modules
+          </Link>
+          <Link to="/my-doubts" className="block px-4 py-2 text-gray-700 hover:bg-indigo-50 relative">
+            My Doubts
+            {unreadCount > 0 && (
+              <span className="absolute top-2 right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                {unreadCount}
+              </span>
+            )}
           </Link>
 
 
