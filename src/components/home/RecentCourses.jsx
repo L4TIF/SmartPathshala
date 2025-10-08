@@ -50,19 +50,19 @@ const RecentCourses = () => {
                             to={`/lesson/${course.id}`}
                             className="group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100"
                         >
-                            {/* Course Image */}
-                            <div className="relative h-32 bg-gradient-to-br from-blue-400 to-purple-500 overflow-hidden">
-                                {course.image ? (
-                                    <img
-                                        src={course.image}
-                                        alt={course.name}
-                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                                    />
-                                ) : (
-                                    <div className="w-full h-full flex items-center justify-center">
-                                        <BookOpen className="w-12 h-12 text-white opacity-80" />
-                                    </div>
-                                )}
+                            {/* Course Header */}
+                            <div className="relative h-32 bg-gradient-to-br from-blue-400 to-purple-500 overflow-hidden flex items-center justify-center">
+                                <div className="text-center text-white p-4">
+                                    <BookOpen className="w-8 h-8 mx-auto mb-2 opacity-90" />
+                                    <h3 className="font-semibold text-lg leading-tight">
+                                        {course.name}
+                                    </h3>
+                                    {course.lastSubmodule && (
+                                        <p className="text-sm opacity-90 mt-1">
+                                            {course.name}: {course.lastSubmodule}
+                                        </p>
+                                    )}
+                                </div>
 
                                 {/* Progress Badge */}
                                 {course.progress.completedLessons > 0 && (
@@ -74,9 +74,6 @@ const RecentCourses = () => {
 
                             {/* Course Content */}
                             <div className="p-4">
-                                <h3 className="font-semibold text-gray-800 mb-2 line-clamp-2 group-hover:text-indigo-600 transition-colors">
-                                    {course.name}
-                                </h3>
 
                                 {/* Progress Bar */}
                                 {course.progress.completedLessons > 0 && (

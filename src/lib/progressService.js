@@ -21,7 +21,8 @@ class ProgressService {
             name: courseName,
             image: courseImage,
             lastOpened: new Date().toISOString(),
-            progress: this.getCourseProgress(courseId)
+            progress: this.getCourseProgress(courseId),
+            lastSubmodule: null
         };
 
         const updatedCourses = [newCourse, ...filteredCourses].slice(0, this.MAX_RECENT_COURSES);
@@ -53,6 +54,24 @@ class ProgressService {
         }
 
         return courseProgress;
+    }
+
+    // Track submodule access
+    trackSubmoduleAccess(courseId, submoduleName) {
+        const recentCourses = this.getRecentCourses();
+        const updatedCourses = recentCourses.map(course => {
+            if (course.id === courseId) {
+                return {
+                    ...course,
+                    lastSubmodule: submoduleName,
+                    lastOpened: new Date().toISOString()
+                };
+            }
+            return course;
+        });
+
+        localStorage.setItem(this.RECENT_COURSES_KEY, JSON.stringify(updatedCourses));
+        return updatedCourses;
     }
 
     // Get course progress

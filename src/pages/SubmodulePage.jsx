@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { mockSubmodulesByModuleId, mockModules } from '../data/mockData'
 import { getSubModules, getModules } from '../appwrite/db'
@@ -38,10 +38,11 @@ const SubmodulePage = () => {
         })()
     }, [moduleId, subId])
 
-    // Track lesson completion when component mounts
-    React.useEffect(() => {
+    // Track lesson completion and submodule access when component mounts
+    useEffect(() => {
         if (subModule && moduleId) {
             progressService.trackLessonCompletion(moduleId, subId);
+            progressService.trackSubmoduleAccess(moduleId, subModule.title);
         }
     }, [subModule, moduleId, subId])
 
